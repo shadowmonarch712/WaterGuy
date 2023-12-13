@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { fetchUserValue, createUserEntry, updateUserValue, deleteUser } from '../ApiService';
+import { GoalContext } from '../Context/GoalContext';
 
 const UserComponent = () => {
+  const { goal, setGoal } = useContext(GoalContext);
   const [userID, setUserID] = useState('');
   const [value, setValue] = useState('');
-  const [goal, setGoal] = useState('');
   const [askForValue, setAskForValue] = useState(false);
+  const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(true); // New state to control form visibility
 
   // Fetch user value
@@ -13,7 +15,8 @@ const UserComponent = () => {
     try {
       const response = await fetchUserValue(userID);
       if (response.data && response.data.data && typeof response.data.data.value !== 'undefined') {
-        setGoal(`Your goal is: ${response.data.data.value}`);
+        setGoal(response.data.data.value);
+        setMessage(`Your goal is: ${response.data.data.value}`);
         setShowForm(false); // Hide form after finding the goal
       } else {
         setAskForValue(true);
@@ -27,7 +30,8 @@ const UserComponent = () => {
   const handleCreate = async () => {
     try {
       const response = await createUserEntry(userID, parseInt(value, 10));
-      setGoal(`Your goal is: ${response.data.data}`);
+      setGoal(response.data.data);
+      setMessage(`Your goal is: ${response.data.data.value}`);
       setShowForm(false); // Hide form after creating the goal
       setAskForValue(false);
     } catch (error) {
@@ -45,7 +49,8 @@ const UserComponent = () => {
       }
       const response = await updateUserValue(userID, intValue);
       console.log(response)
-      setGoal(`Your goal is updated to: ${response.data.data}`);
+      setGoal(response.data.data);
+      setMessage(`Your updated goal is: ${response.data.data.value}`);
     } catch (error) {
       console.error('Error updating user value:', error);
     }
@@ -59,6 +64,7 @@ const UserComponent = () => {
       setAskForValue(false);
       setShowForm(true);
       console.log('Goal deleted:', response.data);
+      setMessage(`Goal deleted`);
     } catch (error) {
       console.error('Error deleting user value:', error);
     }
@@ -83,7 +89,7 @@ const UserComponent = () => {
           </button>
         </div>
       )}
-
+      <p className="flex flex-col items-center mb-4">{message}</p>
       {showForm && askForValue && (
         <div className="flex flex-col items-center">
           <input
@@ -102,9 +108,9 @@ const UserComponent = () => {
         </div>
       )}
 
-      {goal && (
+      {goal > 0 && (
         <div className="flex flex-col items-center mt-4">
-          <p className="mb-4">{goal}</p>
+          
           <input
             className="border-2 border-gray-300 p-2 rounded-md mb-4"
             type="text"
