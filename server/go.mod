@@ -1,4 +1,4 @@
-module github.com/example
+module waterguy
 
 go 1.21.4
 
