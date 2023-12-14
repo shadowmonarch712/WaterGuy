@@ -12,12 +12,16 @@ const UserComponent = () => {
 
   // Fetch user value
   const handleFetch = async () => {
+    console.log("button working")
     try {
       const response = await fetchUserValue(userID);
-      if (response.data && response.data.data && typeof response.data.data.value !== 'undefined') {
-        setGoal(response.data.data.value);
-        setMessage(`Your goal is: ${response.data.data.value}`);
+      console.log(response)
+      if (response.data && response.data.data && typeof response.data.data.Value !== 'undefined') {
+        console.log(response.data)
+        setGoal(response.data.data.Value);
+        setMessage(`Your goal is: ${response.data.data.Value}`);
         setShowForm(false); // Hide form after finding the goal
+        setUserID('')
       } else {
         setAskForValue(true);
       }
@@ -30,10 +34,13 @@ const UserComponent = () => {
   const handleCreate = async () => {
     try {
       const response = await createUserEntry(userID, parseInt(value, 10));
+      console.log(response)
       setGoal(response.data.data);
-      setMessage(`Your goal is: ${response.data.data.value}`);
+      setMessage(`Your goal is: ${response.data.data}`);
       setShowForm(false); // Hide form after creating the goal
       setAskForValue(false);
+      setUserID('');
+      setValue(''); 
     } catch (error) {
       console.error('Error creating user entry:', error);
     }
@@ -50,7 +57,8 @@ const UserComponent = () => {
       const response = await updateUserValue(userID, intValue);
       console.log(response)
       setGoal(response.data.data);
-      setMessage(`Your updated goal is: ${response.data.data.value}`);
+      setMessage(`Your updated goal is: ${response.data.data}`);
+      setValue('');
     } catch (error) {
       console.error('Error updating user value:', error);
     }
@@ -60,6 +68,7 @@ const UserComponent = () => {
   const handleDelete = async () => {
     try {
       const response = await deleteUser(userID);
+      console.log(response)
       setGoal('');
       setAskForValue(false);
       setShowForm(true);

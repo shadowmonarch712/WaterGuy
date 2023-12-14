@@ -10,7 +10,7 @@ export const createUserEntry = (userID, value) => {
     return apiClient.post('/store', { userID, value });
   };
 export const fetchUserValue = (userID) => {
-  return apiClient.get(`/fetch?UserID=${userID}`);
+  return apiClient.get(`/fetch?userID=${userID}`);
 };
 
 export const updateUserValue = (userID, value) => {

@@ -1,45 +1,55 @@
-package controllers
+package User
 
 import (
-    "context"
+	"context"
     "waterguy/database"
     "waterguy/models"
     "gofr.dev/pkg/gofr"
 	"go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
 )
 
+type store struct{}
 
-
-func CreateUserEntry(ctx *gofr.Context) (interface{}, error) {
-    var userEntry models.UserEntry
-    collection := database.GetCollection("user_goal")
-    
-    // Decode the request body into userEntry
-    if err := ctx.Bind(&userEntry); err != nil {
-        return nil, err
-    }
-
-    // Create a BSON document from the userEntry
-    doc := bson.D{{"userID", userEntry.UserID}, {"value", userEntry.Value}}
-
-    // Document insertion
-    _, err := collection.InsertOne(context.TODO(), doc)
-    if err != nil {
-        return nil, err
-    }
-
-    // Return the value field of the userEntry
-    return userEntry.Value, nil
+func New() store {
+	return store{}
 }
+func (s store) CreateUserEntry(ctx *gofr.Context, c models.UserEntry) error {
+	// fetch the Mongo collection
+	collection := database.GetCollection("user_goal")
 
+	_, err := collection.InsertOne(ctx, c)
 
-func FetchUserEntry(ctx *gofr.Context) (interface{}, error) {
+	return err
+}
+// func (s store) CreateUserEntry(ctx *gofr.Context) (interface{}, error) {
+// 	// fetch the Mongo collection
+// 	var userEntry models.UserEntry
+//     collection := database.GetCollection("user_goal")
+    
+//     // Decode the request body into userEntry
+//     if err := ctx.Bind(&userEntry); err != nil {
+//         return nil, err
+//     }
+
+//     // Create a BSON document from the userEntry
+//     doc := bson.D{{"userID", userEntry.UserID}, {"value", userEntry.Value}}
+
+//     // Document insertion
+//     _, err := collection.InsertOne(context.TODO(), doc)
+//     if err != nil {
+//         return nil, err
+//     }
+
+//     // Return the value field of the userEntry
+//     return userEntry.Value, nil
+// }
+func (s store) FetchUserEntry(ctx *gofr.Context) (interface{}, error) {
+	// fetch the Mongo collection
 	collection := database.GetCollection("user_goal")
 	params := ctx.Params() 
-	userID := params["UserID"] 
+	userID := params["userID"] 
 
 	// filter to search for the document
 	filter := bson.D{{"userID", userID}}
@@ -58,7 +68,9 @@ func FetchUserEntry(ctx *gofr.Context) (interface{}, error) {
 	return result, nil
 }
 
-func UpdateUserEntry(ctx *gofr.Context) (interface{}, error) {
+
+func (s store) UpdateUserEntry(ctx *gofr.Context) (interface{}, error) {
+	// fetch the Mongo collection
 	collection := database.GetCollection("user_goal")
 	var userEntry models.UserEntry
 	if err := ctx.Bind(&userEntry); err != nil {
@@ -89,7 +101,8 @@ func UpdateUserEntry(ctx *gofr.Context) (interface{}, error) {
 }
 
 
-func DeleteUserEntry(ctx *gofr.Context) (interface{}, error) {
+func (s store) DeleteUserEntry(ctx *gofr.Context) (interface{}, error) {
+	// fetch the Mongo collection
 	collection := database.GetCollection("user_goal")
 	// Get the userID from the query parameters
 	userID := ctx.Params()["userID"]
@@ -110,3 +123,5 @@ func DeleteUserEntry(ctx *gofr.Context) (interface{}, error) {
 
 	return deleteResult.DeletedCount, nil
 }
+
+

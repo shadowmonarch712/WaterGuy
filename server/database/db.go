@@ -10,7 +10,7 @@ import (
 var Client *mongo.Client
 
 func InitDB() {
-    mongoURI := "mongodb+srv://shadowmonarch712:miniproj@cluster0.x6gqsuf.mongodb.net/"
+    mongoURI := "mongodb://testAdmin:123@localhost:27017/?authMechanism=SCRAM-SHA-1"
 
 
     // Connect to MongoDB

@@ -1,13 +1,18 @@
 package routes
 
 import (
-    "waterguy/controllers"
     "gofr.dev/pkg/gofr"
+    "waterguy/handlers"
+    "waterguy/stores/User"
 )
 
 func SetupRoutes(app *gofr.Gofr) {
-    app.POST("/store", controllers.CreateUserEntry)
-    app.GET("/fetch", controllers.FetchUserEntry)
-    app.PUT("/update", controllers.UpdateUserEntry)
-    app.DELETE("/delete", controllers.DeleteUserEntry)
+
+    store := User.New()
+	h := handlers.New(store)
+
+    app.POST("/store", h.CreateUserEntry)
+    app.GET("/fetch", h.FetchUserEntry)
+    app.PUT("/update", h.UpdateUserEntry)
+    app.DELETE("/delete", h.DeleteUserEntry)
 }

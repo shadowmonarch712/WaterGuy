@@ -17,7 +17,6 @@ func main() {
 
     // Initialize the database
     database.InitDB()
-
     // Setup routes
     routes.SetupRoutes(app)
 
