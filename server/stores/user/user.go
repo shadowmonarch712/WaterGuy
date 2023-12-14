@@ -23,28 +23,6 @@ func (s store) CreateUserEntry(ctx *gofr.Context, c models.UserEntry) error {
 
 	return err
 }
-// func (s store) CreateUserEntry(ctx *gofr.Context) (interface{}, error) {
-// 	// fetch the Mongo collection
-// 	var userEntry models.UserEntry
-//     collection := database.GetCollection("user_goal")
-    
-//     // Decode the request body into userEntry
-//     if err := ctx.Bind(&userEntry); err != nil {
-//         return nil, err
-//     }
-
-//     // Create a BSON document from the userEntry
-//     doc := bson.D{{"userID", userEntry.UserID}, {"value", userEntry.Value}}
-
-//     // Document insertion
-//     _, err := collection.InsertOne(context.TODO(), doc)
-//     if err != nil {
-//         return nil, err
-//     }
-
-//     // Return the value field of the userEntry
-//     return userEntry.Value, nil
-// }
 func (s store) FetchUserEntry(ctx *gofr.Context) (interface{}, error) {
 	// fetch the Mongo collection
 	collection := database.GetCollection("user_goal")

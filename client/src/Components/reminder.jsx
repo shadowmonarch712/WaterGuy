@@ -35,6 +35,7 @@ const WaterIntakeReminder = ({ setShowForm }) => {
     const newTimer = setInterval(() => {
         setGoal((prevGoal) => {
           if (prevGoal > 1) {
+            playAudio(); 
             return prevGoal - 1;
           } else if (prevGoal === 1) {
             clearInterval(newTimer);
@@ -46,6 +47,7 @@ const WaterIntakeReminder = ({ setShowForm }) => {
 
     setTimer(newTimer);
   };
+
 
   const playAudio = () => {
     const audio = new Audio(WaterAudio);

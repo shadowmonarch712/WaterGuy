@@ -22,12 +22,5 @@ func main() {
 
     // app will start on port 8000
     app.Start()
-
-    // connection close
-    // defer func() {
-    //     if err = client.Disconnect(context.TODO()); err != nil {
-    //         log.Fatal(err)
-    //     }
-    // }()
 }
  
