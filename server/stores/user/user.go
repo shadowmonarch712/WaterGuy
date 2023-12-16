@@ -2,12 +2,12 @@ package User
 
 import (
 	"context"
-    "waterguy/database"
-    "waterguy/models"
-    "gofr.dev/pkg/gofr"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"gofr.dev/pkg/gofr"
+	"waterguy/database"
+	"waterguy/models"
 )
 
 type store struct{}
@@ -23,11 +23,9 @@ func (s store) CreateUserEntry(ctx *gofr.Context, c models.UserEntry) error {
 
 	return err
 }
-func (s store) FetchUserEntry(ctx *gofr.Context) (interface{}, error) {
+func (s store) FetchUserEntry(ctx *gofr.Context, userID string) (interface{}, error) {
 	// fetch the Mongo collection
 	collection := database.GetCollection("user_goal")
-	params := ctx.Params() 
-	userID := params["userID"] 
 
 	// filter to search for the document
 	filter := bson.D{{"userID", userID}}
@@ -45,7 +43,6 @@ func (s store) FetchUserEntry(ctx *gofr.Context) (interface{}, error) {
 
 	return result, nil
 }
-
 
 func (s store) UpdateUserEntry(ctx *gofr.Context) (interface{}, error) {
 	// fetch the Mongo collection
@@ -78,13 +75,12 @@ func (s store) UpdateUserEntry(ctx *gofr.Context) (interface{}, error) {
 	return updatedDocument.Value, nil
 }
 
-
-func (s store) DeleteUserEntry(ctx *gofr.Context) (interface{}, error) {
+func (s store) DeleteUserEntry(ctx *gofr.Context, userID string) (interface{}, error) {
 	// fetch the Mongo collection
 	collection := database.GetCollection("user_goal")
 	// Get the userID from the query parameters
-	userID := ctx.Params()["userID"]
-    
+	//userID := ctx.Params()["userID"]
+
 	// filter to search for the document
 	filter := bson.D{{"userID", userID}}
 
@@ -96,10 +92,8 @@ func (s store) DeleteUserEntry(ctx *gofr.Context) (interface{}, error) {
 
 	// Check if the document was found and deleted
 	if deleteResult.DeletedCount == 0 {
-		return "No document found with the given userID to delete", nil
+		return 0, nil
 	}
 
-	return deleteResult.DeletedCount, nil
+	return int(deleteResult.DeletedCount), nil
 }
-
-

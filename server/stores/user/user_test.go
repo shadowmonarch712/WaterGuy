@@ -2,15 +2,15 @@ package User
 
 import (
 	"context"
+	"gofr.dev/pkg/datastore"
+	"gofr.dev/pkg/gofr"
 	"testing"
 	"waterguy/database"
 	"waterguy/models"
 
-	"gofr.dev/pkg/datastore"
-	"gofr.dev/pkg/gofr"
-
 	"github.com/stretchr/testify/assert"
 )
+
 func initializeTest(t *testing.T) *gofr.Context {
 	app := gofr.New()
 
@@ -25,11 +25,12 @@ func initializeTest(t *testing.T) *gofr.Context {
 
 	return ctx
 }
+
 func TestModel_Create(t *testing.T) {
 	tests := []struct {
-		desc     string
+		desc string
 		user string
-		err      error
+		err  error
 	}{
 		{"create success", `{"userID":"testuser1","value":42}`, nil},
 	}
@@ -43,5 +44,54 @@ func TestModel_Create(t *testing.T) {
 		err := store.CreateUserEntry(ctx, c)
 
 		assert.Equal(t, tc.err, err, "TEST[%d], failed.\n%s", i, tc.desc)
+	}
+}
+
+func TestCustomer_Fetch(t *testing.T) {
+	tests := []struct {
+		desc  string
+		value string
+		resp  models.UserEntry
+		err   error
+	}{
+		{
+			desc:  "get single entity",
+			value: "Messi",
+			resp:  models.UserEntry{UserID: "Messi", Value: 32},
+			err:   nil,
+		},
+	}
+
+	store := New()
+	ctx := initializeTest(t)
+
+	for i, tc := range tests {
+		resp, err := store.FetchUserEntry(ctx, tc.value)
+
+		assert.Equal(t, tc.err, err, "TEST[%d], failed.\n%s", i, tc.desc)
+
+		assert.Equal(t, tc.resp, resp, "TEST[%d], failed.\n%s", i, tc.desc)
+	}
+}
+func TestModel_Delete(t *testing.T) {
+	tests := []struct {
+		desc   string
+		userID string
+		count  int
+		err    error
+	}{
+		{"delete non existent entity", "Alex", 0, nil},
+		{"delete single entity", "Thomas", 1, nil},
+	}
+
+	store := New()
+	ctx := initializeTest(t)
+
+	for i, tc := range tests {
+		count, err := store.DeleteUserEntry(ctx, tc.userID)
+		//count := result.(int)
+
+		assert.Equal(t, tc.err, err, "TEST[%d], failed.\n%s", i, tc.desc)
+		assert.Equal(t, tc.count, count, "TEST[%d], failed.\n%s", i, tc.desc)
 	}
 }

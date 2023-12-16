@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"waterguy/stores"
-	"waterguy/models"
 	"gofr.dev/pkg/gofr"
+	"waterguy/models"
+	"waterguy/stores"
 )
 
 type handler struct {
@@ -30,7 +30,9 @@ func (h handler) CreateUserEntry(ctx *gofr.Context) (interface{}, error) {
 	return c.Value, nil
 }
 func (h handler) FetchUserEntry(ctx *gofr.Context) (interface{}, error) {
-	resp, err := h.store.FetchUserEntry(ctx)
+	params := ctx.Params()
+	userID := params["userID"]
+	resp, err := h.store.FetchUserEntry(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +48,8 @@ func (h handler) UpdateUserEntry(ctx *gofr.Context) (interface{}, error) {
 	return resp, nil
 }
 func (h handler) DeleteUserEntry(ctx *gofr.Context) (interface{}, error) {
-	resp, err := h.store.DeleteUserEntry(ctx)
+	userID := ctx.Params()["userID"]
+	resp, err := h.store.DeleteUserEntry(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
