@@ -21,7 +21,7 @@ const UserComponent = () => {
         setGoal(response.data.data.Value);
         setMessage(`Your goal is: ${response.data.data.Value}`);
         setShowForm(false); // Hide form after finding the goal
-        setUserID('')
+        // setUserID('')
       } else {
         setAskForValue(true);
       }
@@ -47,13 +47,15 @@ const UserComponent = () => {
   };
 
   // Update user value
-  const handleUpdate = async () => {
+  const handleUpdate = async (userID) => {
     try {
       const intValue = parseInt(value, 10);
       if (isNaN(intValue)) {
         console.error('Value must be a number');
         return;
       }
+      console.log(userID)
+      console.log(intValue)
       const response = await updateUserValue(userID, intValue);
       console.log(response)
       setGoal(response.data.data);
@@ -130,7 +132,7 @@ const UserComponent = () => {
           <div className="flex justify-center space-x-2">
           <button
             className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-700 w-32"
-            onClick={handleUpdate}
+            onClick={() => handleUpdate(userID)}
           >
             Update Goal
           </button>

@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gofr.dev/pkg/gofr"
+	"log"
 	"waterguy/database"
 	"waterguy/models"
 )
@@ -44,19 +45,19 @@ func (s store) FetchUserEntry(ctx *gofr.Context, userID string) (interface{}, er
 	return result, nil
 }
 
-func (s store) UpdateUserEntry(ctx *gofr.Context) (interface{}, error) {
+func (s store) UpdateUserEntry(ctx *gofr.Context, user models.UserEntry) (interface{}, error) {
 	// fetch the Mongo collection
 	collection := database.GetCollection("user_goal")
-	var userEntry models.UserEntry
-	if err := ctx.Bind(&userEntry); err != nil {
-		return nil, err
-	}
-
+	//var user models.UserEntry
+	//if err := ctx.Bind(&user); err != nil {
+	//	return nil, err
+	//}
+	log.Printf("Updating UserEntry: %+v\n", user)
 	// Filter to search for the document
-	filter := bson.D{{"userID", userEntry.UserID}}
+	filter := bson.D{{"userID", user.UserID}}
 
 	// Create an update to change the value
-	update := bson.D{{"$set", bson.D{{"value", userEntry.Value}}}}
+	update := bson.D{{"$set", bson.D{{"value", user.Value}}}}
 
 	// Options to return the updated document
 	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)

@@ -73,6 +73,7 @@ func TestCustomer_Fetch(t *testing.T) {
 		assert.Equal(t, tc.resp, resp, "TEST[%d], failed.\n%s", i, tc.desc)
 	}
 }
+
 func TestModel_Delete(t *testing.T) {
 	tests := []struct {
 		desc   string
@@ -93,5 +94,26 @@ func TestModel_Delete(t *testing.T) {
 
 		assert.Equal(t, tc.err, err, "TEST[%d], failed.\n%s", i, tc.desc)
 		assert.Equal(t, tc.count, count, "TEST[%d], failed.\n%s", i, tc.desc)
+	}
+}
+func TestModel_Update(t *testing.T) {
+	tests := []struct {
+		desc string
+		user models.UserEntry
+		resp interface{}
+		err  error
+	}{
+		{"update non existent entity", models.UserEntry{UserID: "Alex", Value: 50}, "No document found with the given userID to update", nil},
+		{"update existing entity", models.UserEntry{UserID: "Thomas", Value: 100}, 100, nil},
+	}
+
+	store := New()
+	ctx := initializeTest(t)
+
+	for i, tc := range tests {
+		resp, err := store.UpdateUserEntry(ctx, tc.user)
+
+		assert.Equal(t, tc.err, err, "TEST[%d], failed.\n%s", i, tc.desc)
+		assert.Equal(t, tc.resp, resp, "TEST[%d], failed.\n%s", i, tc.desc)
 	}
 }

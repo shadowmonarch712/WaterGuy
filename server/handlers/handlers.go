@@ -40,7 +40,11 @@ func (h handler) FetchUserEntry(ctx *gofr.Context) (interface{}, error) {
 	return resp, nil
 }
 func (h handler) UpdateUserEntry(ctx *gofr.Context) (interface{}, error) {
-	resp, err := h.store.UpdateUserEntry(ctx)
+	var user models.UserEntry
+	if err := ctx.Bind(&user); err != nil {
+		return nil, err
+	}
+	resp, err := h.store.UpdateUserEntry(ctx, user)
 	if err != nil {
 		return nil, err
 	}
